@@ -15,7 +15,7 @@ import org.apache.hadoop.util.GenericOptionsParser;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.hadoop.conf.Configured;
-import org.apache.hadoop.examples.excel.ExcelInputFormat;;
+
 
 
 public class MyWordCountMultiFile extends Configured implements Tool {
@@ -31,6 +31,22 @@ public class MyWordCountMultiFile extends Configured implements Tool {
       String line = value.toString().trim();
       String[] fields = line.split(";");
       String distrito = fields[17];
+      //word.set(distrito);
+      context.write(new Text(distrito), new IntWritable(1));
+
+    }
+  }
+
+  public static class TokenizerMapperXLS extends Mapper<Object, Text, Text, IntWritable>{
+
+    //private final static IntWritable one = new IntWritable(1);
+    //private Text word = new Text();
+
+    public void map(Object key, Text value, Context context ) throws IOException, InterruptedException {
+      
+      String line = value.toString().trim();
+      String[] fields = line.split("\t");
+      String distrito = fields[13];
       //word.set(distrito);
       context.write(new Text(distrito), new IntWritable(1));
 
@@ -64,8 +80,8 @@ public class MyWordCountMultiFile extends Configured implements Tool {
 
         String[] otherArgStrings = new GenericOptionsParser(conf, args).getRemainingArgs();
 
-        if (otherArgStrings.length != 3) {
-            System.out.println("USAGE: org.apache.hadoop.examples.MyWordCountMultiFile <IN_1_FILE_CSV> <IN_2_FILE_CSV> <OUT_DESTINATION_FILE>");
+        if (otherArgStrings.length != 4) {
+            System.out.println("USAGE: org.apache.hadoop.examples.MyWordCountMultiFile <IN_1_FILE_CSV> <IN_2_FILE_CSV> <IN_2_FILE_XLS> <OUT_DESTINATION_FILE>");
             return 2;
         }
 
@@ -75,7 +91,7 @@ public class MyWordCountMultiFile extends Configured implements Tool {
        
         MultipleInputs.addInputPath(job, new Path(otherArgStrings[0]), TextInputFormat.class, TokenizerMapper.class);
         MultipleInputs.addInputPath(job, new Path(otherArgStrings[1]), TextInputFormat.class, TokenizerMapper.class);
-        MultipleInputs.addInputPath(job, new Path(otherArgStrings[2]), ExcelInputFormat.class, TokenizerMapper.class);
+        MultipleInputs.addInputPath(job, new Path(otherArgStrings[2]), ExcelInputFormat.class, TokenizerMapperXLS.class);
 
         FileOutputFormat.setOutputPath(job, new Path(otherArgStrings[3]));
         

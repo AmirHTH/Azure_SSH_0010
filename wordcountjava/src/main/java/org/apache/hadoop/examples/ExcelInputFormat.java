@@ -1,4 +1,4 @@
-package org.apache.hadoop.examples.excel;
+package org.apache.hadoop.examples;
 import java.io.IOException;
 
 import org.apache.hadoop.io.LongWritable;
