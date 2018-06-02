@@ -37,6 +37,7 @@ public class MyWordCountMultiFile extends Configured implements Tool {
     }
   }
 
+  
   public static class TokenizerMapperXLS extends Mapper<Object, Text, Text, IntWritable>{
 
     //private final static IntWritable one = new IntWritable(1);
